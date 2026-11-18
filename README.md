@@ -1,130 +1,131 @@
 # ✨ NEXORA
 ### Your Digital Identity, Protected.
 
-<p align="center">
-  <strong>A Modern Authentication Web Application</strong><br>
-  Built with Python, Streamlit, SQLite, and bcrypt
-</p>
+NEXORA is a cloud-based user authentication system built with **Python** and **Streamlit**. It provides secure user registration and login, bcrypt password protection, and persistent user records through a **Supabase PostgreSQL cloud database**.
 
----
+## 🚀 Features
 
-## 🌐 About NEXORA
+- **User Registration:** Create an account with a unique username and password. Duplicate usernames are not allowed.
+- **Secure User Login:** Authenticate users by checking their entered password against the stored bcrypt hash.
+- **Password Visibility:** Show or hide passwords during registration and login.
+- **Logout:** End the current user or administrator session.
+- **Admin Authentication:** Separate administrator login using credentials stored in Streamlit Secrets.
+- **Admin Dashboard:** View registered users' usernames, bcrypt salts, and password hashes in a structured table.
+- **Persistent Cloud Storage:** Keep user records in Supabase even after the application restarts.
+- **Modern Interface:** Clean Streamlit interface with custom CSS styling.
+- **Cloud Deployment:** Run the application online through Streamlit Community Cloud.
 
-**NEXORA** is a modern and user-friendly authentication web application developed using Python and Streamlit. It provides a simple way for users to create an account, log in securely, access a personal dashboard, and log out.
+## 🔐 Password Security with bcrypt
 
-The project focuses on password security by using the **bcrypt hashing algorithm**. Instead of saving passwords as plain text, NEXORA hashes each password with a randomly generated salt before storing it in the SQLite database.
+NEXORA uses the **bcrypt** library to protect user passwords:
 
-Its interface features a blue, purple, and cyan gradient design to create a clean and welcoming user experience.
+- Generates a unique salt for each password.
+- Hashes passwords before saving them.
+- Never stores original passwords in plain text.
+- Uses `bcrypt.checkpw()` to verify login attempts.
 
-## ✨ Key Features
+**Note:** bcrypt is a one-way password-hashing algorithm. The original password is not displayed or stored.
 
-- **User Registration** – Create a new account with a username and password.
-- **User Login** – Sign in using registered account credentials.
-- **bcrypt Password Hashing** – Protect passwords by storing their bcrypt hashes instead of plain-text passwords.
-- **Automatic Random Salt** – Generate a unique random salt through bcrypt during password hashing.
-- **Password Confirmation** – Confirm the password during registration.
-- **Show/Hide Password** – Choose whether to display or hide password input.
-- **Input Validation** – Check required fields, minimum username length, minimum password length, and matching passwords.
-- **Duplicate Username Prevention** – Prevent registration with a username that already exists.
-- **SQLite Database** – Store usernames and password hashes.
-- **Personalized Dashboard** – Display a welcome message after successful login.
-- **Logout Functionality** – End the active session and return to the login page.
-- **Modern Gradient Interface** – Use a blue, purple, and cyan visual theme.
+## ☁️ Supabase Cloud Database
 
-## 🔐 How NEXORA Works
+NEXORA uses **Supabase PostgreSQL** to store user records persistently in the cloud.
 
-NEXORA follows a straightforward registration and login process.
+The `users` table contains:
 
-### 1. Registration Process
-
-1. The user opens the registration page.
-2. The user enters a username, password, and password confirmation.
-3. The application validates the entered information.
-4. bcrypt generates a random salt and creates a hash of the password.
-5. The username and password hash are stored in the SQLite database.
-
-### 2. Login Process
-
-1. The user enters their registered username and password.
-2. The application searches for the username in the database.
-3. bcrypt checks the entered password against the stored password hash.
-4. If the password is correct, the user is logged in and taken to the dashboard.
-5. If the credentials are incorrect, an error message is displayed.
-
-### 3. Logout Process
-
-When the user clicks the **Logout** button, the active login session is cleared and the application returns to the login page.
-
-## 🛡️ Password Security with bcrypt
-
-NEXORA uses **bcrypt** for password hashing.
-
-- `bcrypt.gensalt()` generates a random salt.
-- `bcrypt.hashpw()` hashes the password using the generated salt.
-- The resulting hash, which includes the salt information, is stored in the database.
-- `bcrypt.checkpw()` verifies a password during login.
-
-Passwords are not stored as plain text. The application stores the bcrypt password hash in SQLite.
-
-## 🧰 Technologies and Libraries
-
-| Technology / Library | Purpose |
+| Column | Description |
 |---|---|
-| **Python** | Main programming language used to develop the application |
-| **Streamlit** | Creates the web interface and handles user interaction |
-| **SQLite3** | Creates and manages the user database |
-| **bcrypt** | Generates password hashes and verifies passwords |
-| **HTML** | Structures the custom interface elements |
-| **CSS** | Styles the application with colors, gradients, spacing, and buttons |
+| `id` | Unique user ID |
+| `username` | Unique registered username |
+| `password_hash` | bcrypt password hash |
+| `salt` | Generated bcrypt salt |
+| `created_at` | Account creation timestamp |
 
-## 📁 Project Structure
+The Admin Dashboard displays the username, salt, and password hash. The `created_at` field remains in the database but is not displayed on the dashboard.
 
-```text
-NEXORA/
-│
-├── app.py
-├── requirements.txt
-└── README.md
+## 📊 How It Works
+
+**Registration**
+1. User enters a username and password.
+2. The app checks that the username is not already registered.
+3. bcrypt generates a salt and password hash.
+4. The username, salt, and hash are saved in Supabase.
+
+**Login**
+1. User enters their credentials.
+2. The app retrieves the stored password hash from Supabase.
+3. bcrypt verifies the entered password using `bcrypt.checkpw()`.
+4. Access is granted only if the password matches.
+
+**Admin Dashboard**
+1. The administrator signs in using separate admin credentials.
+2. The app verifies those credentials using Streamlit Secrets.
+3. The dashboard retrieves and displays registered users' security records from Supabase.
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python | Application logic |
+| Streamlit | Web interface |
+| bcrypt | Password hashing and verification |
+| Supabase PostgreSQL | Cloud database |
+| Git & GitHub | Version control and source code hosting |
+| Streamlit Community Cloud | Application deployment |
+
+## ⚙️ Run Locally
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/Habibatarena-CS/NEXORA.git
+cd NEXORA
 ```
 
-| File | Description |
-|---|---|
-| `app.py` | Main application code, including registration, login, password hashing, database operations, and dashboard |
-| `requirements.txt` | Lists the Python libraries required to run the application |
-| `README.md` | Project overview, features, technologies, and working process |
-
-The `users.db` SQLite database is created automatically when the application runs.
-
-## ⚙️ Installation and Setup
-
-### Requirements
-
-- Python installed on the system
-- Internet connection for installing the required libraries
-
-### Install the Libraries
+**2. Install dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Run the Application
+**3. Configure Streamlit Secrets**
+
+Create `.streamlit/secrets.toml` and add your own values:
+
+```toml
+SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL"
+SUPABASE_KEY = "YOUR_SUPABASE_SECRET_KEY"
+ADMIN_USERNAME = "YOUR_ADMIN_USERNAME"
+ADMIN_PASSWORD = "YOUR_ADMIN_PASSWORD"
+```
+
+**4. Start the application**
 
 ```bash
 streamlit run app.py
 ```
 
-The NEXORA application opens in a web browser.
+## 📦 Requirements
+
+```text
+streamlit
+bcrypt
+supabase
+```
+
+## 🔒 Security Reminder
+
+Keep your Supabase Secret key and administrator password private. Store them in Streamlit Secrets and never commit real credentials to GitHub.
+
+The Admin Dashboard exposes password hashes and salts for this project's educational demonstration. In a production application, access to these records should be tightly restricted.
 
 ## 🎯 Project Objective
 
-The objective of NEXORA is to develop a simple and interactive authentication system while applying important concepts of password security and web application development.
-
-Through this project, I have implemented user registration, login authentication, bcrypt password hashing, automatic salt generation, database connectivity, input validation, and session-based navigation in a Streamlit application.
+NEXORA demonstrates secure user authentication, bcrypt password hashing, salt generation, cloud database integration, and administrator access management in a deployed web application.
 
 ---
 
 <p align="center">
-  <strong>✦ NEXORA</strong><br>
-  <em>Your Digital Identity, Protected.</em>
+
+**NEXORA — Your Digital Identity, Protected.** ✨
+
 </p>
