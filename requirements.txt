@@ -1,1 +1,2 @@
-streamlit\nbcrypt\n
+streamlit
+bcrypt
