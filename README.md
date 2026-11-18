@@ -2,6 +2,13 @@
 ### Your Digital Identity, Protected.
 
 NEXORA is a cloud-based user authentication system built with **Python** and **Streamlit**. It provides secure user registration and login, bcrypt password protection, and persistent user records through a **Supabase PostgreSQL cloud database**.
+## 🌐 Live Demo
+
+**Try NEXORA:** ## 🌐 Live Demo
+
+[Open NEXORA — Live Application](https://nexora-secure.streamlit.app/)
+
+Explore the NEXORA interface, user registration, secure login, and authentication features.
 
 ## 🚀 Features
 
