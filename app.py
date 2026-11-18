@@ -1,194 +1,3 @@
-import sqlite3
-import bcrypt
-import streamlit as st
-
-DB_NAME = "users.db"
-
-st.set_page_config(page_title="NEXORA | Digital Identity", page_icon="✨", layout="centered")
-
-
-st.markdown("""
-<style>
-
-/* Main Background */
-.stApp {
-    background: linear-gradient(135deg, #101d50, #392078, #087eaa);
-    color: white;
-}
-
-/* Main Container */
-.main .block-container {
-    max-width: 650px;
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-}
-
-/* NEXORA Heading */
-.hero {
-    text-align: center;
-    padding: 20px 5px;
-}
-
-.hero h1 {
-    font-size: 46px;
-    font-weight: 900;
-    background: linear-gradient(90deg, #55e6ff, #d69cff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.hero p {
-    color: #d6e5ff;
-    font-size: 15px;
-}
-
-/* General Text */
-h1, h2, h3, p, label {
-    color: white;
-}
-
-/* Form Design */
-[data-testid="stForm"] {
-    background: rgba(255,255,255,0.09);
-    padding: 25px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-/* Input Fields */
-.stTextInput input {
-    border-radius: 10px;
-    color: #1e293b !important;
-    background-color: #ffffff !important;
-}
-
-/* Input Placeholder */
-.stTextInput input::placeholder {
-    color: #64748b !important;
-    opacity: 1;
-}
-
-/* Success and Error Messages */
-.stAlert,
-.stAlert p,
-.stAlert div {
-    color: #1e293b !important;
-}
-
-/* Buttons */
-.stButton > button,
-.stFormSubmitButton > button {
-    width: 100%;
-    min-height: 45px;
-    border: 0;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #00c6ff, #8e54e9);
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-}
-
-/* Button Hover */
-.stButton > button:hover,
-.stFormSubmitButton > button:hover {
-    color: white;
-    border: 0;
-    box-shadow: 0 6px 20px rgba(0,198,255,0.4);
-}
-
-/* Footer */
-.footer {
-    text-align: center;
-    color: #c5d8ff;
-    font-size: 12px;
-    margin-top: 35px;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
-def create_table():
-    with sqlite3.connect(DB_NAME) as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                username TEXT PRIMARY KEY,
-                password_hash TEXT NOT NULL
-            )
-        """)
-
-
-def register_user(username, password):
-    password_bytes = password.encode("utf-8")
-
-    # bcrypt accepts a maximum input length of 72 bytes
-    if len(password_bytes) > 72:
-        return "long_password"
-
-    # bcrypt automatically generates a random salt
-    password_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-
-    try:
-        with sqlite3.connect(DB_NAME) as conn:
-            conn.execute(
-                "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-                (username, password_hash.decode("utf-8"))
-            )
-        return "success"
-    except sqlite3.IntegrityError:
-        return "exists"
-
-
-def login_user(username, password):
-    with sqlite3.connect(DB_NAME) as conn:
-        row = conn.execute(
-            "SELECT password_hash FROM users WHERE username = ?",
-            (username,)
-        ).fetchone()
-
-    if row is None:
-        return False
-
-    password_bytes = password.encode("utf-8")
-    if len(password_bytes) > 72:
-        return False
-
-    saved_hash = row[0].encode("utf-8")
-    return bcrypt.checkpw(password_bytes, saved_hash)
-
-
-if "page" not in st.session_state:
-    st.session_state.page = "login"
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-if "username" not in st.session_state:
-    st.session_state.username = ""
-
-create_table()
-
-st.markdown("""
-<div class="hero">
-    <h1>✦ NEXORA</h1>
-    <p>Your Digital Identity, Protected.</p>
-</div>
-""", unsafe_allow_html=True)
-
-if st.session_state.logged_in:
-    st.success("Login Successful! 🎉")
-    st.markdown(f"## Welcome, {st.session_state.username}!")
-    st.markdown("### Your account is now active.")
-    st.write("You have successfully accessed your NEXORA dashboard.")
-    st.info("Your password is protected using bcrypt hashing.")
-
-    if st.button("LOGOUT"):
-        st.session_state.logged_in = False
-        st.session_state.username = ""
-        st.session_state.page = "login"
-        st.rerun()
-
-elif st.session_state.page == "login":
-    st.markdown("## Welcome Back! 👋")
-    st.write("Login to access your account.")
     show_password = st.checkbox("Show Password", key="login_show_password")
 
     with st.form("login_form"):
@@ -196,7 +5,7 @@ elif st.session_state.page == "login":
         password = st.text_input(
             "Password",
             type="default" if show_password else "password",
-            placeholder="Enter your password"
+            placeholder="Enter your password",
         )
         submit = st.form_submit_button("LOGIN")
 
@@ -207,6 +16,7 @@ elif st.session_state.page == "login":
         elif login_user(username, password):
             st.session_state.logged_in = True
             st.session_state.username = username
+            st.session_state.is_admin = False
             st.rerun()
         else:
             st.error("Invalid username or password.")
@@ -214,12 +24,21 @@ elif st.session_state.page == "login":
     st.write("")
     col1, col2 = st.columns([2, 1])
     with col1:
-        st.markdown('<p style="padding-top:8px;">Don\'t have an account?</p>', unsafe_allow_html=True)
+        st.markdown(
+            '<p style="padding-top:8px;">Don\'t have an account?</p>',
+            unsafe_allow_html=True,
+        )
     with col2:
         if st.button("Register Here →"):
             st.session_state.page = "register"
             st.rerun()
 
+    if st.button("Admin Login →"):
+        st.session_state.page = "admin_login"
+        st.rerun()
+
+
+# -------------------- REGISTRATION PAGE --------------------
 elif st.session_state.page == "register":
     st.markdown("## Create Your Account ✨")
     st.write("Join NEXORA and create your account.")
@@ -230,12 +49,12 @@ elif st.session_state.page == "register":
         password = st.text_input(
             "Password",
             type="default" if show_password else "password",
-            placeholder="Create a password"
+            placeholder="Create a password",
         )
         confirm_password = st.text_input(
             "Confirm Password",
             type="default" if show_password else "password",
-            placeholder="Enter password again"
+            placeholder="Enter password again",
         )
         submit = st.form_submit_button("CREATE ACCOUNT")
 
@@ -263,12 +82,41 @@ elif st.session_state.page == "register":
     st.write("")
     col1, col2 = st.columns([2, 1])
     with col1:
-        st.markdown('<p style="padding-top:8px;">Already have an account?</p>', unsafe_allow_html=True)
+        st.markdown(
+            '<p style="padding-top:8px;">Already have an account?</p>',
+            unsafe_allow_html=True,
+        )
     with col2:
         if st.button("Back to Login →"):
             st.session_state.page = "login"
             st.rerun()
 
+
+# -------------------- ADMIN LOGIN PAGE --------------------
+elif st.session_state.page == "admin_login":
+    st.markdown("## Admin Login 🔐")
+    st.write("Authorized administrator access only.")
+
+    with st.form("admin_login_form"):
+        admin_username = st.text_input("Admin Username")
+        admin_password = st.text_input("Admin Password", type="password")
+        submit = st.form_submit_button("ADMIN LOGIN")
+
+    if submit:
+        if admin_credentials_match(admin_username.strip(), admin_password):
+            st.session_state.logged_in = True
+            st.session_state.is_admin = True
+            st.session_state.username = admin_username.strip()
+            st.rerun()
+        else:
+            st.error("Invalid admin credentials.")
+
+    if st.button("Back to Login →"):
+        st.session_state.page = "login"
+        st.rerun()
+
+
+# -------------------- FOOTER --------------------
 st.markdown("""
 <div class="footer">
     Protected with bcrypt password hashing
