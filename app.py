@@ -8,6 +8,28 @@ st.set_page_config(page_title="NEXORA | Digital Identity", page_icon="✨", layo
 
 st.markdown("""
 <style>
+/* Your existing CSS */
+.stApp {
+    background: linear-gradient(...);
+}
+
+/* New CSS — paste here */
+.stTextInput input {
+    color: #1e293b !important;
+    background-color: #ffffff !important;
+}
+
+.stAlert,
+.stAlert p,
+.stAlert div {
+    color: #1e293b !important;
+}
+
+.stTextInput input::placeholder {
+    color: #64748b !important;
+    opacity: 1;
+}
+</style>
 .stApp { background: linear-gradient(135deg, #101d50, #392078, #087eaa); color: white; }
 .main .block-container { max-width: 650px; padding-top: 2rem; padding-bottom: 3rem; }
 .hero { text-align: center; padding: 20px 5px; }
