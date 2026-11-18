@@ -6,41 +6,104 @@ DB_NAME = "users.db"
 
 st.set_page_config(page_title="NEXORA | Digital Identity", page_icon="✨", layout="centered")
 
+
 st.markdown("""
 <style>
-/* Your existing CSS */
+
+/* Main Background */
 .stApp {
-    background: linear-gradient(...);
+    background: linear-gradient(135deg, #101d50, #392078, #087eaa);
+    color: white;
 }
 
-/* New CSS — paste here */
+/* Main Container */
+.main .block-container {
+    max-width: 650px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* NEXORA Heading */
+.hero {
+    text-align: center;
+    padding: 20px 5px;
+}
+
+.hero h1 {
+    font-size: 46px;
+    font-weight: 900;
+    background: linear-gradient(90deg, #55e6ff, #d69cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    color: #d6e5ff;
+    font-size: 15px;
+}
+
+/* General Text */
+h1, h2, h3, p, label {
+    color: white;
+}
+
+/* Form Design */
+[data-testid="stForm"] {
+    background: rgba(255,255,255,0.09);
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Input Fields */
 .stTextInput input {
+    border-radius: 10px;
     color: #1e293b !important;
     background-color: #ffffff !important;
 }
 
+/* Input Placeholder */
+.stTextInput input::placeholder {
+    color: #64748b !important;
+    opacity: 1;
+}
+
+/* Success and Error Messages */
 .stAlert,
 .stAlert p,
 .stAlert div {
     color: #1e293b !important;
 }
 
-.stTextInput input::placeholder {
-    color: #64748b !important;
-    opacity: 1;
+/* Buttons */
+.stButton > button,
+.stFormSubmitButton > button {
+    width: 100%;
+    min-height: 45px;
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #00c6ff, #8e54e9);
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
 }
-</style>
-.stApp { background: linear-gradient(135deg, #101d50, #392078, #087eaa); color: white; }
-.main .block-container { max-width: 650px; padding-top: 2rem; padding-bottom: 3rem; }
-.hero { text-align: center; padding: 20px 5px; }
-.hero h1 { font-size: 46px; font-weight: 900; background: linear-gradient(90deg,#55e6ff,#d69cff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero p { color: #d6e5ff; font-size: 15px; }
-h1,h2,h3,p,label { color: white; }
-[data-testid="stForm"] { background: rgba(255,255,255,0.09); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
-.stTextInput input { border-radius: 10px; }
-.stButton > button, .stFormSubmitButton > button { width:100%; min-height:45px; border:0; border-radius:12px; background:linear-gradient(90deg,#00c6ff,#8e54e9); color:white; font-weight:bold; font-size:15px; }
-.stButton > button:hover, .stFormSubmitButton > button:hover { color:white; border:0; box-shadow:0 6px 20px rgba(0,198,255,0.4); }
-.footer { text-align:center; color:#c5d8ff; font-size:12px; margin-top:35px; }
+
+/* Button Hover */
+.stButton > button:hover,
+.stFormSubmitButton > button:hover {
+    color: white;
+    border: 0;
+    box-shadow: 0 6px 20px rgba(0,198,255,0.4);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    color: #c5d8ff;
+    font-size: 12px;
+    margin-top: 35px;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
